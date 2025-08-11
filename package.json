@@ -1,0 +1,26 @@
+{
+  "name": "cleaning-app-production",
+  "version": "1.0.0",
+  "description": "Application de gestion des agents d'entretien - Production",
+  "scripts": {
+    "build": "cd backend && npm install && npm run build && cd ../frontend && npm install && npm run build",
+    "start": "cd backend && npm start",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "railway:build": "cd backend && npm install && npx prisma generate",
+    "railway:start": "cd backend && npm start",
+    "railway:setup": "cd backend && npx prisma db push && npx tsx scripts/smartDailyStartup.ts"
+  },
+  "keywords": [
+    "cleaning",
+    "management",
+    "react",
+    "nodejs",
+    "production",
+    "railway"
+  ],
+  "author": "Cleaning App",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,49 @@
+name: Dependency Update
+
+on:
+  schedule:
+    - cron: '0 0 * * MON'  # Weekly on Monday at midnight
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    name: Update Dependencies
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # Update Backend Dependencies
+      - name: Update backend dependencies
+        working-directory: ./backend
+        run: |
+          npx npm-check-updates -u
+          npm install
+
+      # Update Frontend Dependencies
+      - name: Update frontend dependencies
+        working-directory: ./frontend
+        run: |
+          npx npm-check-updates -u
+          npm install
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update dependencies'
+          title: 'Automated Dependency Update'
+          body: |
+            This PR updates all dependencies to their latest versions.
+            
+            Please review the changes and ensure all tests pass before merging.
+          branch: automated-dependency-update
+          delete-branch: true

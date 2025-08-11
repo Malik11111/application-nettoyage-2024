@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                String             @id @default(cuid())
+  name              String
+  slug              String             @unique
+  domain            String?
+  logoUrl           String?
+  address           String?
+  contactEmail      String?
+  contactPhone      String?
+  subscriptionPlan  String             @default("basic")
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  cleaningTemplates CleaningTemplate[]
+  locations         Location[]
+  planningTemplates PlanningTemplate[]
+  tasks             Task[]
+  users             User[]
+
+  @@map("organizations")
+}
+
+model User {
+  id                       String             @id @default(cuid())
+  email                    String
+  password                 String
+  name                     String
+  role                     String             @default("AGENT")
+  organizationId           String?
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+  cleaningTemplates        CleaningTemplate[] @relation("AgentTemplates")
+  createdPlanningTemplates PlanningTemplate[] @relation("CreatedPlanningTemplates")
+  assignedTasks            Task[]             @relation("AssignedAgent")
+  organization             Organization?      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([email, organizationId])
+  @@map("users")
+}
+
+model Location {
+  id                  String       @id @default(cuid())
+  name                String
+  description         String?
+  floor               String
+  type                String
+  surface             Float?
+  cleaningCoefficient Float        @default(1.2)
+  organizationId      String
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  tasks               Task[]
+
+  @@map("locations")
+}
+
+model Task {
+  id                String            @id @default(cuid())
+  title             String
+  description       String?
+  status            String            @default("PENDING")
+  priority          String            @default("MEDIUM")
+  estimatedDuration Int?
+  actualDuration    Int?
+  scheduledDate     DateTime?
+  scheduledTime     String?
+  startTime         DateTime?
+  endTime           DateTime?
+  isRecurring       Boolean           @default(false)
+  templateId        String?
+  organizationId    String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  completedAt       DateTime?
+  locationId        String
+  assignedAgentId   String?
+  template          CleaningTemplate? @relation(fields: [templateId], references: [id])
+  assignedAgent     User?             @relation("AssignedAgent", fields: [assignedAgentId], references: [id])
+  location          Location          @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  organization      Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
+}
+
+model CleaningTemplate {
+  id             String        @id @default(cuid())
+  name           String
+  description    String?
+  agentId        String?
+  organizationId String?
+  timeSlots      String
+  isActive       Boolean       @default(true)
+  isGlobal       Boolean       @default(false)
+  templateType   String        @default("CUSTOM")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  agent          User?         @relation("AgentTemplates", fields: [agentId], references: [id], onDelete: Cascade)
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  tasks          Task[]
+
+  @@map("cleaning_templates")
+}
+
+model PlanningTemplate {
+  id             String        @id @default(cuid())
+  name           String
+  description    String?
+  organizationId String?
+  weeklySchedule String
+  workStart      String?
+  workEnd        String?
+  breakStart     String?
+  breakEnd       String?
+  locations      String?
+  isDefault      Boolean       @default(false)
+  isActive       Boolean       @default(true)
+  createdBy      String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  creator        User          @relation("CreatedPlanningTemplates", fields: [createdBy], references: [id])
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("planning_templates")
+}
