@@ -1,2 +1,2 @@
-web: cd backend && npm start
-release: cd backend && npx prisma db push && npx tsx scripts/smartDailyStartup.ts
+web: cd backend && npm install && npm start
+release: cd backend && npm install && npx prisma generate && npx prisma db push

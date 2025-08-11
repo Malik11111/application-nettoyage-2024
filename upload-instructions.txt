@@ -1,0 +1,23 @@
+INSTRUCTIONS POUR UPLOAD GITHUB :
+
+1. Allez dans votre dossier : C:\Users\os\Desktop\CLAUDE-\cleaning-app
+
+2. Sélectionnez TOUS les fichiers et dossiers (Ctrl+A)
+
+3. Clic droit > Envoyer vers > Dossier compressé
+
+4. Sur GitHub, cliquez "Add file" > "Upload files"
+
+5. Glissez le fichier ZIP OU tous les fichiers/dossiers
+
+6. Message : "🚀 Production ready - Cleaning App"
+
+7. Cliquez "Commit changes"
+
+APRÈS L'UPLOAD :
+- Allez sur Railway
+- New Project > Deploy from GitHub 
+- Choisissez cleaning-app-production
+- Railway fait le reste !
+
+URL finale : https://votre-app.up.railway.app
