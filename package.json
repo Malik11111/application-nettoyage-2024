@@ -4,7 +4,8 @@
   "description": "Application de gestion des agents d'entretien - Production",
   "scripts": {
     "start": "npm start --prefix backend",
-    "build": "echo 'Build completed'",
+    "build": "cd backend && npm install && npx prisma generate",
+    "postbuild": "cd backend && npx prisma migrate deploy",
     "dev": "npm run dev --prefix backend"
   },
   "keywords": [

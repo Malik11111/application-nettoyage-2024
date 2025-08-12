@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "cd backend && npm install && npx prisma generate && npx prisma migrate deploy && npm start",
+    "startCommand": "npm start --prefix backend",
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "always"
