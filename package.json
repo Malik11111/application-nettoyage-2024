@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "Application de gestion des agents d'entretien - Production",
   "scripts": {
-    "start": "npm start --prefix backend",
-    "build": "cd backend && npm install && npx prisma generate",
-    "postbuild": "cd backend && npx prisma migrate deploy",
+    "start": "cd backend && npm install && npx tsx src/index.ts",
+    "build": "echo 'Build skip'",
     "dev": "npm run dev --prefix backend"
   },
   "keywords": [
