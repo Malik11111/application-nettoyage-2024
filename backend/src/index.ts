@@ -23,6 +23,11 @@ if (process.env.NODE_ENV === 'production') {
 
 dotenv.config();
 
+// Configuration par défaut pour Railway si DATABASE_URL manque
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = "file:./dev.db";
+}
+
 // Import routes
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
