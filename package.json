@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Application de gestion des agents d'entretien - Production",
   "scripts": {
-    "start": "cd backend && npm ci --production && npx prisma generate && npx tsx src/index.ts",
-    "build": "cd backend && npm ci --production && npx prisma generate",
-    "postinstall": "cd backend && npm install --production",
+    "start": "cd backend && npm install --production && npx prisma generate && npx tsx src/index.ts",
+    "build": "cd backend && npm install --production && npx prisma generate",
+    "install": "cd backend && npm install --production",
     "dev": "npm run dev --prefix backend"
   },
   "keywords": [
