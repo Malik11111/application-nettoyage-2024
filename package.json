@@ -6,7 +6,8 @@
     "start": "cd backend && npm install --production && npx prisma generate && npx tsx src/index.ts",
     "build": "cd backend && npm install --production && npx prisma generate",
     "install": "cd backend && npm install --production",
-    "dev": "npm run dev --prefix backend"
+    "dev": "npm run dev --prefix backend",
+    "seed": "cd backend && npx prisma generate && npx tsx scripts/railwaySeeding.ts"
   },
   "keywords": [
     "cleaning",

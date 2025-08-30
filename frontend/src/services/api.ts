@@ -24,7 +24,7 @@ import {
   DuplicatePlanningRequest
 } from '../types';
 
-const BASE_URL = 'http://localhost:3002/api';
+const BASE_URL = (typeof window !== 'undefined' && (window as any).env?.VITE_API_URL) || 'https://web-production-f9c83.up.railway.app/api';
 
 const api = axios.create({
   baseURL: BASE_URL,

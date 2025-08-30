@@ -1,0 +1,23 @@
+{
+  "name": "cleaning-app-frontend-production",
+  "version": "1.0.0",
+  "description": "Interface React pour l'application de gestion des agents d'entretien - Production",
+  "scripts": {
+    "start": "cd frontend && npm install && npm run build && npm run preview -- --port $PORT --host 0.0.0.0",
+    "build": "cd frontend && npm install && npm run build",
+    "install": "cd frontend && npm install"
+  },
+  "keywords": [
+    "cleaning",
+    "management", 
+    "react",
+    "frontend",
+    "production",
+    "railway"
+  ],
+  "author": "Cleaning App",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
