@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Application de gestion des agents d'entretien - Production",
   "scripts": {
-    "start": "cd backend && npm install && npx tsx src/index.ts",
-    "build": "echo 'Build skip'",
+    "start": "cd backend && npm ci && npx tsx src/index.ts",
+    "build": "cd backend && npm ci",
+    "postinstall": "cd backend && npm install",
     "dev": "npm run dev --prefix backend"
   },
   "keywords": [
@@ -19,5 +20,8 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "tsx": "^4.7.1"
   }
 }
