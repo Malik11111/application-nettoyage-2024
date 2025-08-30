@@ -21,11 +21,17 @@ router.get('/health', async (req, res) => {
       }
     };
 
-    // Check database connection
+    // Check database connection with timeout
     try {
-      await prisma.$queryRaw`SELECT 1`;
+      const dbPromise = prisma.$queryRaw`SELECT 1`;
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database timeout')), 5000)
+      );
+      
+      await Promise.race([dbPromise, timeoutPromise]);
       healthCheck.services.database = 'healthy';
     } catch (error) {
+      console.log('Database health check failed:', error);
       healthCheck.services.database = 'unhealthy';
       healthCheck.status = 'DEGRADED';
     }
