@@ -81,6 +81,10 @@ app.use(cors(getCorsOptions()));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve static frontend files from public directory
+import path from 'path';
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Health check endpoints
 app.use('/api', healthRoutes);
 
@@ -184,9 +188,14 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-// Handle 404
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+// Catch-all handler for React Router - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  // Only serve index.html for non-API routes
+  if (req.path.startsWith('/api/')) {
+    res.status(404).json({ message: 'API route not found' });
+  } else {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  }
 });
 
 app.listen(PORT, () => {
