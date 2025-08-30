@@ -89,6 +89,80 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Temporary direct seeding endpoint
+app.get('/seed-db', async (req, res) => {
+  try {
+    const { PrismaClient } = require('@prisma/client');
+    const bcrypt = require('bcryptjs');
+    const prisma = new PrismaClient();
+
+    console.log('🌱 Starting direct database seeding...');
+
+    // Create default organization
+    const defaultOrg = await prisma.organization.upsert({
+      where: { slug: 'default-org' },
+      update: {},
+      create: {
+        name: 'Organisation Par Défaut',
+        slug: 'default-org',
+        subscriptionPlan: 'premium',
+        isActive: true
+      }
+    });
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash('123456', 10);
+
+    // Create users
+    const users = [
+      { email: 'admin@cleaning.com', name: 'Super Admin', role: 'SUPER_ADMIN' },
+      { email: 'admin1@etablissement.com', name: 'Admin Établissement 1', role: 'ADMIN' },
+      { email: 'agent1a@etablissement.com', name: 'Agent 1A', role: 'AGENT' }
+    ];
+
+    const createdUsers = [];
+    for (const userData of users) {
+      const user = await prisma.user.upsert({
+        where: { 
+          email_organizationId: {
+            email: userData.email,
+            organizationId: defaultOrg.id
+          }
+        },
+        update: {},
+        create: {
+          email: userData.email,
+          password: hashedPassword,
+          name: userData.name,
+          role: userData.role,
+          organizationId: defaultOrg.id
+        }
+      });
+      createdUsers.push(user.email);
+    }
+
+    await prisma.$disconnect();
+
+    res.json({
+      success: true,
+      message: '🎉 Database seeded successfully!',
+      users: createdUsers,
+      testAccounts: [
+        'admin@cleaning.com / 123456',
+        'admin1@etablissement.com / 123456',
+        'agent1a@etablissement.com / 123456'
+      ]
+    });
+
+  } catch (error) {
+    console.error('❌ Seeding error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // API routes with specific rate limiting
 app.use('/api/auth', authRateLimit, authRoutes);
 app.use('/api/users', apiRateLimit, userRoutes);
