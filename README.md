@@ -1,6 +1,14 @@
-# Application de Gestion des Agents d'Entretien
+# 🧹 Application de Gestion des Agents d'Entretien
 
-Une application complète de gestion des agents d'entretien avec tableau de bord en temps réel, gestion des tâches, et métriques de performance.
+Application de gestion des agents d'entretien optimisée pour Railway.
+
+## 🚀 Déploiement Production
+**URL :** https://web-production-f9c83.up.railway.app
+
+## 🔐 Comptes de test
+- **Super Admin :** `admin@cleaning.com` / `123456`
+- **Admin :** `admin1@etablissement.com` / `123456`  
+- **Agent :** `agent1a@etablissement.com` / `123456`
 
 ## 🚀 Fonctionnalités
 

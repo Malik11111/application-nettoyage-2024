@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Application de gestion des agents d'entretien - Production",
   "scripts": {
-    "start": "cd backend && npm ci && npx tsx src/index.ts",
-    "build": "cd backend && npm ci",
-    "postinstall": "cd backend && npm install",
+    "start": "cd backend && npm ci --production && npx tsx src/index.ts",
+    "build": "cd backend && npm ci --production",
+    "postinstall": "cd backend && npm install --production",
     "dev": "npm run dev --prefix backend"
   },
   "keywords": [
