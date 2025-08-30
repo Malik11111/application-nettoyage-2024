@@ -39,6 +39,7 @@ import dashboardRoutes from './routes/dashboard';
 import healthRoutes from './routes/health';
 import maintenanceRoutes from './routes/maintenance';
 import organizationRoutes from './routes/organizations';
+import seedRoutes from './routes/seed';
 import { metricsCollector } from './middleware/metrics';
 import { startScheduledTaskGeneration } from './services/scheduledTaskGenerator';
 
@@ -97,6 +98,7 @@ app.use('/api/templates', apiRateLimit, templateRoutes);
 app.use('/api/planning', apiRateLimit, planningRoutes);
 app.use('/api/dashboard', apiRateLimit, dashboardRoutes);
 app.use('/api/maintenance', apiRateLimit, maintenanceRoutes);
+app.use('/api/seed', seedRoutes); // Temporary seeding route
 app.use('/api/organizations', apiRateLimit, organizationRoutes);
 
 // Error handling middleware
