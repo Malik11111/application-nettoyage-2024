@@ -21,7 +21,7 @@ export const globalRateLimit = rateLimit({
 
 export const authRateLimit = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit each IP to 10 auth attempts per hour
+  max: process.env.NODE_ENV === 'production' ? 20 : 10, // More lenient in production
   skipSuccessfulRequests: true,
   message: {
     error: 'Too many authentication attempts, please try again later.',
