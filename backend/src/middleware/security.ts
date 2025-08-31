@@ -187,6 +187,7 @@ export const getCorsOptions = () => {
         'https://cleaning-app-production.netlify.app',
         'https://cleaning-app-test-2025.netlify.app',
         /https:\/\/.*\.netlify\.app$/,
+        'https://malik11111.github.io',
         'https://yourdomain.com',
         'https://www.yourdomain.com',
         process.env.FRONTEND_URL
