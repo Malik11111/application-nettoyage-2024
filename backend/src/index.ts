@@ -83,13 +83,24 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static frontend files from public directory
 import path from 'path';
+import mime from 'mime-types';
+
 app.use(express.static(path.join(__dirname, '../public'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.js')) {
-      res.setHeader('Content-Type', 'application/javascript');
-    } else if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
+  setHeaders: (res, filePath) => {
+    const mimeType = mime.lookup(filePath);
+    if (mimeType) {
+      res.setHeader('Content-Type', mimeType);
     }
+    // Force correct MIME types for critical files
+    if (filePath.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    } else if (filePath.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css; charset=utf-8');
+    }
+    // Disable caching during debugging
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
   }
 }));
 
