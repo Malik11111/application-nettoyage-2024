@@ -184,6 +184,7 @@ export const requestSizeLimiter = (req: Request, res: Response, next: NextFuncti
 export const getCorsOptions = () => {
   const allowedOrigins = process.env.NODE_ENV === 'production'
     ? [
+        'https://cleaning-app-production.netlify.app',
         'https://yourdomain.com',
         'https://www.yourdomain.com',
         process.env.FRONTEND_URL
