@@ -1,15 +1,18 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "./index.html",
-      "use": "@vercel/static"
-    }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "routes": [
+    {
+      "handle": "filesystem"
+    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "VITE_API_URL": "https://web-production-f9c83.up.railway.app/api"
+  }
 }
