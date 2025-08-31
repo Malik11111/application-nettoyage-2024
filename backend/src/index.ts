@@ -81,17 +81,31 @@ app.use(cors(getCorsOptions()));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve static frontend files from public directory
+// Serve static frontend files - place BEFORE other middleware
 import path from 'path';
-app.use(express.static(path.join(__dirname, '../public'), {
-  index: false, // Don't serve index.html automatically for directories
-  setHeaders: (res, filePath) => {
-    // Disable caching completely
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+import fs from 'fs';
+
+// Manual static file handling for better control
+app.get('/assets/*', (req, res, next) => {
+  const filePath = path.join(__dirname, '../public', req.path);
+  
+  if (!fs.existsSync(filePath)) {
+    return next();
   }
-}));
+
+  // Set proper headers
+  if (req.path.endsWith('.js')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  } else if (req.path.endsWith('.css')) {
+    res.setHeader('Content-Type', 'text/css');
+  }
+  
+  res.setHeader('Cache-Control', 'no-cache');
+  res.sendFile(filePath);
+});
+
+// Fallback static serving
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Health check endpoints
 app.use('/api', healthRoutes);
