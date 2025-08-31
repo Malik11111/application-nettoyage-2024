@@ -1,6 +1,6 @@
 [build]
   publish = "dist"
-  command = "echo 'Skipping remote build - using local dist' && ls -la"
+  command = "npm run build"
 
 [[redirects]]
   from = "/*"
