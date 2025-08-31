@@ -64,17 +64,31 @@ export const securityHeaders = (req: Request, res: Response, next: NextFunction)
   // Referrer Policy
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   
-  // Content Security Policy
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-    "img-src 'self' data: https:; " +
-    "font-src 'self' data: https://fonts.gstatic.com; " +
-    "connect-src 'self'; " +
-    "frame-ancestors 'none';"
-  );
+  // Content Security Policy - Temporarily relaxed for debugging
+  if (process.env.NODE_ENV === 'development') {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; " +
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+      "img-src 'self' data: https:; " +
+      "font-src 'self' data: https://fonts.gstatic.com; " +
+      "connect-src 'self'; " +
+      "frame-ancestors 'none';"
+    );
+  } else {
+    // More permissive CSP for production debugging
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src *; " +
+      "script-src * 'unsafe-inline' 'unsafe-eval'; " +
+      "style-src * 'unsafe-inline'; " +
+      "img-src * data:; " +
+      "font-src * data:; " +
+      "connect-src *; " +
+      "frame-ancestors 'none';"
+    );
+  }
   
   // HTTP Strict Transport Security (only in production with HTTPS)
   if (process.env.NODE_ENV === 'production') {
