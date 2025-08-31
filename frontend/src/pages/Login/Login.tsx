@@ -12,6 +12,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { login, clearError } from '../../store/slices/authSlice';
+import api from '../../services/api';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +25,10 @@ const Login: React.FC = () => {
     email: '',
     password: '',
   });
+
+  const [organizations, setOrganizations] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
 
   const from = (location.state as any)?.from?.pathname || 
     (user?.role === 'AGENT' ? '/tasks' : '/dashboard');
@@ -39,6 +44,19 @@ const Login: React.FC = () => {
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
+
+  useEffect(() => {
+    // Afficher seulement les comptes réels connus - Version 2025-08-31-14:30
+    setOrganizations([
+      { name: 'Organisation Par Défaut', slug: 'default-org', id: 'default-org' }
+    ]);
+    setUsers([
+      { email: 'admin@cleaning.com', name: 'Super Admin', role: 'SUPER_ADMIN', organizationId: 'default-org' },
+      { email: 'admin1@etablissement.com', name: 'Admin Établissement', role: 'ADMIN', organizationId: 'default-org' },
+      { email: 'agent1a@etablissement.com', name: 'Agent', role: 'AGENT', organizationId: 'default-org' }
+    ]);
+    setLoadingData(false);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -83,7 +101,7 @@ const Login: React.FC = () => {
           }}
         >
           <Typography component="h1" variant="h4" align="center" gutterBottom>
-            Gestion des Agents d'Entretien
+            🚀 VERSION FIXÉE 2025 🚀
           </Typography>
           
           <Typography variant="h6" align="center" color="text.secondary" gutterBottom>
@@ -127,7 +145,14 @@ const Login: React.FC = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ 
+                mt: 3, 
+                mb: 2, 
+                backgroundColor: 'purple !important',
+                '&:hover': {
+                  backgroundColor: 'darkviolet !important'
+                }
+              }}
               disabled={isLoading}
             >
               {isLoading ? <CircularProgress size={24} /> : 'Se connecter'}
@@ -136,80 +161,62 @@ const Login: React.FC = () => {
 
           <Box sx={{ mt: 3, p: 2, backgroundColor: 'grey.100', borderRadius: 1, maxHeight: '300px', overflowY: 'auto' }}>
             <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 2 }}>
-              <strong>📧 Comptes Multi-Tenant - Mot de passe: 123456</strong>
+              <strong>🔑 Comptes de Connexion</strong>
             </Typography>
             
-            {/* SUPER ADMIN */}
-            <Typography 
-              variant="caption" 
-              sx={{ 
-                mt: 1, 
-                display: 'block', 
-                cursor: 'pointer', 
-                fontWeight: 'bold',
-                backgroundColor: 'primary.main',
-                color: 'white',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                mb: 1,
-                '&:hover': { backgroundColor: 'primary.dark' }
-              }}
-              onClick={() => handleEmailClick('admin@cleaning.com')}
-            >
-              🔱 SUPER ADMIN: admin@cleaning.com
-            </Typography>
-            
-            {/* 10 ÉTABLISSEMENTS */}
-            {[1,2,3,4,5,6,7,8,9,10].map(num => (
-              <Box key={num} sx={{ mb: 1, border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 }}>
-                <Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold', mb: 0.5 }}>
-                  🏢 Établissement {num}:
-                </Typography>
-                
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    display: 'block', 
-                    cursor: 'pointer', 
-                    ml: 1,
-                    '&:hover': { backgroundColor: 'secondary.light', color: 'white', padding: '2px 4px', borderRadius: '4px' }
-                  }}
-                  onClick={() => handleEmailClick(`admin${num}@etablissement.com`)}
-                >
-                  👨‍💼 admin{num}@etablissement.com
-                </Typography>
-                
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    display: 'block', 
-                    cursor: 'pointer', 
-                    ml: 1,
-                    '&:hover': { backgroundColor: 'info.light', color: 'white', padding: '2px 4px', borderRadius: '4px' }
-                  }}
-                  onClick={() => handleEmailClick(`agent${num}a@etablissement.com`)}
-                >
-                  👷 agent{num}a@etablissement.com
-                </Typography>
-                
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    display: 'block', 
-                    cursor: 'pointer', 
-                    ml: 1,
-                    '&:hover': { backgroundColor: 'info.light', color: 'white', padding: '2px 4px', borderRadius: '4px' }
-                  }}
-                  onClick={() => handleEmailClick(`agent${num}b@etablissement.com`)}
-                >
-                  👷 agent{num}b@etablissement.com
-                </Typography>
+            {loadingData ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                <CircularProgress size={24} />
               </Box>
-            ))}
-            
-            <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'primary.main', textAlign: 'center' }}>
-              💡 Clique sur un email pour le copier • 🔱=Voit tout • 👨‍💼=Admin établissement • 👷=Agent
-            </Typography>
+            ) : (
+              <>
+                {/* Grouper les utilisateurs par organisation */}
+                {organizations.map((org) => {
+                  const orgUsers = users.filter(user => 
+                    user.organizationId === org.id || 
+                    (org.slug === 'default-org' && !user.organizationId)
+                  );
+                  
+                  if (orgUsers.length === 0) return null;
+                  
+                  return (
+                    <Box key={org.id || org.slug} sx={{ mb: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 }}>
+                      <Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold', mb: 1, color: 'primary.main' }}>
+                        🏢 {org.name}
+                      </Typography>
+                      
+                      {orgUsers.map((user) => (
+                        <Typography 
+                          key={user.id || user.email}
+                          variant="caption" 
+                          sx={{ 
+                            display: 'block', 
+                            cursor: 'pointer', 
+                            ml: 1,
+                            mb: 0.5,
+                            padding: '2px 4px',
+                            borderRadius: '4px',
+                            '&:hover': { 
+                              backgroundColor: user.role === 'SUPER_ADMIN' ? 'primary.light' :
+                                            user.role === 'ADMIN' ? 'secondary.light' : 'info.light',
+                              color: 'white'
+                            }
+                          }}
+                          onClick={() => handleEmailClick(user.email)}
+                        >
+                          {user.role === 'SUPER_ADMIN' ? '🔱' :
+                           user.role === 'ADMIN' ? '👨‍💼' : '👷'} {user.name}
+                        </Typography>
+                      ))}
+                    </Box>
+                  );
+                })}
+                
+                <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'primary.main', textAlign: 'center' }}>
+                  💡 Clique sur un compte pour remplir l'email • 🔱=Super Admin • 👨‍💼=Admin • 👷=Agent
+                </Typography>
+              </>
+            )}
           </Box>
         </Paper>
       </Box>
