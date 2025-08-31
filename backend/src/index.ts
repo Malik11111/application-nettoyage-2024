@@ -83,7 +83,15 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static frontend files from public directory
 import path from 'path';
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../public'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
 
 // Health check endpoints
 app.use('/api', healthRoutes);
