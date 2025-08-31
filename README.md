@@ -38,62 +38,72 @@ Application de gestion des agents d'entretien optimisée pour Railway.
 ### Base de données
 - **PostgreSQL 15**
 
-## 📦 Installation et Démarrage
+## 📦 Installation et Démarrage (Projet Nettoyé)
 
 ### Prérequis
-- Node.js 18+
-- PostgreSQL 15
-- npm ou yarn
+- Node.js 18+ et npm 8+
+- PostgreSQL 15+ (pour développement local)
+- Docker et Docker Compose (recommandé)
 
-### Option 1: Démarrage avec Docker (Recommandé)
+### 🚀 Installation Rapide avec Docker (Recommandé)
 
-1. **Cloner le projet**
+1. **Cloner et installer**
    ```bash
    git clone <repository-url>
    cd cleaning-app
+   npm run install:all  # Installation workspace complète
    ```
 
-2. **Démarrer avec Docker Compose**
+2. **Démarrer l'environnement complet**
    ```bash
-   docker-compose up -d
+   docker-compose up -d  # PostgreSQL + Backend + Frontend
    ```
 
-3. **Initialiser la base de données** (première fois seulement)
+3. **Initialiser la base de données** (première fois uniquement)
    ```bash
-   docker exec -it cleaning-app-backend npx prisma db push
-   docker exec -it cleaning-app-backend npm run prisma:seed
+   npm run db:setup     # Génération Prisma + Push schema
+   npm run db:seed      # Peuplement données de test
    ```
 
 4. **Accéder à l'application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001
-   - Base de données: localhost:5432
+   - 🌐 **Frontend**: http://localhost:3000
+   - 🚀 **Backend API**: http://localhost:3001  
+   - 🗄️ **PostgreSQL**: localhost:5432
+   - 📊 **Prisma Studio**: `npm run prisma:studio` (dans backend/)
 
-### Option 2: Démarrage Manuel
+### 🛠️ Développement Manuel (Sans Docker)
 
-1. **Base de données PostgreSQL**
+1. **Installer toutes les dépendances**
    ```bash
-   # Créer une base de données PostgreSQL nommée "cleaning_app"
-   createdb cleaning_app
+   npm run install:all
    ```
 
-2. **Backend**
+2. **Base de données locale**
+   ```bash
+   createdb cleaning_app  # Créer la DB PostgreSQL
+   ```
+
+3. **Configuration environnement**
    ```bash
    cd backend
-   npm install
    cp .env.example .env
-   # Modifier DATABASE_URL dans .env si nécessaire
-   npx prisma db push
-   npm run prisma:seed
-   npm run dev
+   # Éditer DATABASE_URL dans .env si nécessaire
    ```
 
-3. **Frontend**
+4. **Démarrage complet**
    ```bash
-   cd frontend
-   npm install
-   npm run dev
+   npm run db:setup     # Setup Prisma + Schema
+   npm run db:seed      # Données de test
+   npm run dev          # Backend + Frontend simultanés
    ```
+
+### ⚡ Commandes de Développement Rapides
+```bash
+npm run dev          # Développement simultané (backend + frontend)
+npm run build        # Build production complète
+npm run test         # Tests complets
+npm run lint         # Linting complet avec auto-fix
+```
 
 ## 👤 Comptes de Démonstration
 
@@ -140,46 +150,111 @@ Application de gestion des agents d'entretien optimisée pour Railway.
 - Heures travaillées par agent
 - Efficacité (temps estimé vs temps réel)
 
-## 🏗 Structure du Projet
+## 🏗 Structure du Projet (Nettoyé et Organisé)
 
 ```
 cleaning-app/
-├── backend/                 # API Node.js + Express
+├── backend/                      # API Node.js + Express + TypeScript
 │   ├── src/
-│   │   ├── controllers/     # Logique métier
-│   │   ├── routes/         # Routes Express
-│   │   ├── middleware/     # Authentification, validation
-│   │   ├── services/       # Services (base de données)
-│   │   └── types/          # Types TypeScript
-│   ├── prisma/             # Schéma et migrations
-│   └── package.json
-├── frontend/               # Interface React
+│   │   ├── controllers/          # Logique métier des contrôleurs
+│   │   ├── routes/               # Routes Express API
+│   │   ├── middleware/           # Authentification, validation, CORS
+│   │   ├── services/             # Services base de données
+│   │   ├── types/                # Types TypeScript partagés
+│   │   └── index.ts              # Point d'entrée principal
+│   ├── prisma/
+│   │   ├── schema.prisma         # Schéma de base de données
+│   │   ├── migrations/           # Migrations SQL
+│   │   └── seed.ts               # Données de test
+│   ├── scripts/
+│   │   └── railwaySeeding.ts     # Script de seeding pour Railway
+│   ├── tests/                    # Tests unitaires et d'intégration
+│   ├── .env.example              # Variables d'environnement exemple
+│   ├── .eslintrc.js              # Configuration ESLint
+│   ├── jest.config.js            # Configuration Jest pour les tests
+│   ├── tsconfig.json             # Configuration TypeScript
+│   ├── Dockerfile                # Image Docker backend
+│   └── package.json              # Dépendances backend
+├── frontend/                     # Interface React + TypeScript + Vite
 │   ├── src/
-│   │   ├── components/     # Composants réutilisables
-│   │   ├── pages/          # Pages principales
-│   │   ├── store/          # Redux store et slices
-│   │   ├── services/       # API calls
-│   │   └── types/          # Types TypeScript
-│   └── package.json
-└── docker-compose.yml      # Configuration Docker
+│   │   ├── components/           # Composants React réutilisables
+│   │   ├── pages/                # Pages principales de l'application
+│   │   ├── store/                # Redux Toolkit store et slices
+│   │   ├── services/             # Services API (Axios)
+│   │   ├── types/                # Types TypeScript frontend
+│   │   ├── styles/               # Styles CSS/SCSS
+│   │   ├── utils/                # Utilitaires partagés
+│   │   └── App.tsx               # Composant principal React
+│   ├── public/                   # Assets statiques
+│   ├── .eslintrc.cjs             # Configuration ESLint
+│   ├── tsconfig.json             # Configuration TypeScript
+│   ├── vite.config.ts            # Configuration Vite
+│   ├── Dockerfile                # Image Docker frontend (Nginx)
+│   ├── nginx.conf                # Configuration Nginx pour production
+│   └── package.json              # Dépendances frontend
+├── .github/                      # GitHub Actions workflows
+├── docker-compose.yml            # Développement local avec Docker
+├── package.json                  # Scripts root et workspace config
+├── .gitignore                    # Fichiers ignorés par Git (complet)
+└── README.md                     # Documentation complète
 ```
+
+### 🧹 Nettoyage Effectué
+
+**Fichiers/Dossiers Supprimés :**
+- `malik/` - Dossier vide
+- `frontend-server/` - Configuration redondante
+- `node_modules/` (root) - Node modules non nécessaire au niveau racine
+- `frontend-package.json` et `frontend-railway.json` - Fichiers dupliqués
+- Scripts de développement inutilisés dans `backend/scripts/`
+- Fichiers de configuration Railway redondants
+- Anciens fichiers de documentation (CLAUDE.md, DEPLOY_RAILWAY_FIXED.md, etc.)
+
+**Améliorations Apportées :**
+- Dependencies front-end complètement fixées (React, MUI, Redux Toolkit ajoutés)
+- Configuration ESLint ajoutée pour backend et frontend  
+- Package.json root configuré comme workspace avec scripts utiles
+- .gitignore complet et professionnel
+- Structure de projet claire et organisée
 
 ## 🔧 Scripts Disponibles
 
-### Backend
+### Root (Niveau Projet)
 ```bash
-npm run dev          # Démarrage en mode développement
-npm run build        # Build production
-npm start            # Démarrage production
-npm run prisma:push  # Appliquer le schéma à la DB
-npm run prisma:seed  # Peupler avec des données de test
+npm run dev                 # Démarrage simultané backend + frontend
+npm run build               # Build complet du projet
+npm run test                # Tests backend + frontend
+npm run lint                # Linting backend + frontend
+npm run install:all         # Installation complète des dépendances
+npm run db:setup            # Configuration base de données (Prisma)
+npm run db:seed             # Peuplement données de test
 ```
 
-### Frontend
+### Backend
 ```bash
-npm run dev          # Démarrage en mode développement
-npm run build        # Build production
-npm run preview      # Prévisualisation du build
+npm run dev          # Développement avec hot-reload (nodemon)
+npm run build        # Build TypeScript vers JavaScript
+npm start            # Démarrage production
+npm run test         # Tests Jest
+npm run lint         # ESLint avec auto-fix
+npm run prisma:push  # Application du schéma à la DB
+npm run prisma:seed  # Peuplement avec données de test
+```
+
+### Frontend  
+```bash
+npm run dev          # Serveur de développement Vite
+npm run build        # Build production optimisé
+npm run preview      # Prévisualisation du build local
+npm run test         # Tests Vitest
+npm run lint         # ESLint avec TypeScript
+```
+
+### Docker (Développement)
+```bash
+docker-compose up -d    # Démarrage environnement complet
+docker-compose down     # Arrêt des services
+docker-compose logs     # Visualisation des logs
 ```
 
 ## 🌟 Fonctionnalités Avancées

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Agents d'Entretien</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            font-weight: 400;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 1.25rem;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            color: #1976d2;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 16px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #1976d2;
+            border-width: 2px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 24px 0 16px 0;
+        }
+        
+        button:hover {
+            background-color: #1565c0;
+        }
+        
+        .accounts-section {
+            background-color: #f5f5f5;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 24px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .accounts-title {
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        
+        .organization {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .org-name {
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .user-item {
+            display: block;
+            margin-left: 8px;
+            margin-bottom: 4px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        .user-item:hover {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .help-text {
+            text-align: center;
+            color: #1976d2;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion des Agents d'Entretien</h1>
+        <div class="subtitle">Connexion</div>
+        
+        <form>
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mot de passe *</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">Se connecter</button>
+        </form>
+        
+        <div class="accounts-section">
+            <div class="accounts-title">🔑 Comptes de Connexion</div>
+            
+            <div class="organization">
+                <span class="org-name">🏢 Organisation Par Défaut</span>
+                
+                <span class="user-item" onclick="fillEmail('admin@cleaning.com')">
+                    🔱 Super Admin
+                </span>
+                <span class="user-item" onclick="fillEmail('admin1@etablissement.com')">
+                    👨‍💼 Admin Établissement
+                </span>
+                <span class="user-item" onclick="fillEmail('agent1a@etablissement.com')">
+                    👷 Agent
+                </span>
+            </div>
+            
+            <div class="help-text">
+                💡 Clique sur un compte pour remplir l'email • 🔱=Super Admin • 👨‍💼=Admin • 👷=Agent
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function fillEmail(email) {
+            document.getElementById('email').value = email;
+        }
+    </script>
+</body>
+</html>
